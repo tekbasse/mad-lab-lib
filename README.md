@@ -59,15 +59,19 @@ over 88 major formats including important formats like
 DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF."
    (from: http://www.graphicsmagick.org/ )
 
-files
------
+file descriptions
+-----------------
 
-mad-lab-lib.tcl    Tcl procedures
-data-analyzer.tcl  A Tcl demo program that combines and summarizes data from files.
-eq-data-*.txt  Filtered earthquake data used for plots, in tab-delimited format
-gt-data-*.txt  Filtered global temperature data used for plots, in tab-delimited format
-gt-eq-combo.txt Earthquake energy combined and appended to the global temperature data
-gt-eq-trends.txt Global temperature trends with summary earthquake energy per trend.
+ mad-lab-lib.tcl    Tcl procedures
+ data-analyzer.tcl  A Tcl demo program that combines and summarizes data from files.
+ eq-data-*.txt  Filtered earthquake data used for plots, in tab-delimited format
+ gt-data-*.txt  Filtered global temperature data used for plots, in tab-delimited format
+ gt-eq-combo.txt Earthquake energy combined and appended to the global temperature data
+ gt-eq-trends.txt Global temperature trends with summary earthquake energy per trend.
+ dgt-deq-plot-*.png Chart showing delta global temperature vs delta earthquake energy during same temperature trend interval
+ dgt-eq-plot-*.png Chart showing delta global temperature vs earthquake energy during same temperature trend interval
+ gt-eq-plot-*.png Chart showing global temperature vs earthquake energy during same interval
+
 
 A trend is defined as a contiguous change of temperature in the same direction.
 
