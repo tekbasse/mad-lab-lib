@@ -1,7 +1,19 @@
-# This works:
-# gm convert gt-eq-plot-0-0.png -fill "#0000ff" -stroke "#0000ff" -draw 'path "M 50 55 L 60 65 L 70 75" circle 80,85 90,95 point 100,105' gt-eq-plot-0-0.png
+#  mad-lab-lib.tcl
 
-# mad-lab-lib.tcl
+#  Mad Laboratory Tcl and graphics library
+#  For experimenter's with limited computing hardware resources
+
+#  license
+#  Copyright (c) 2013 Benjamin Brink
+#  po box 20, Marylhurst, OR 97036-0020 usa
+#  email: tekbasse@yahoo.com
+
+#  Mad-Lab-lib is open source and published under the GNU General Public License
+
+#  A local copy is available at LICENSE.txt
+
+
+
 
 if { [catch {package require TclMagick} err_msg ] } {
     #puts "TclMagick not available. Using graphicsmagick directly."
@@ -68,6 +80,10 @@ proc draw_image_path_color { imagename x_y_coordinates_list color {opacity 1} } 
         #puts "exec gm convert -fill none -stroke $color -draw [gm_path_builder $path_segment ] $imagename $imagename"
         exec gm convert -fill $fillcolor -stroke $color -draw [gm_path_builder $path_segment ] $imagename $imagename
     }
+    # This works in bash shell:
+    # gm convert gt-eq-plot-0-0.png -fill "#0000ff" -stroke "#0000ff" -draw 'path "M 50 55 L 60 65 L 70 75" circle 80,85 90,95 point 100,105' gt-eq-plot-0-0.png
+
+
     #puts "exec gm convert -fill none -stroke $color -draw [gm_path_builder $x_y_coordinates_list ] $imagename $imagename"
     set path [gm_path_builder $x_y_coordinates_list ]
     if { [string match "*point*" $path] } {

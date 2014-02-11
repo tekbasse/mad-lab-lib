@@ -1,4 +1,14 @@
 # file: convert-gt.tcl
+#  This is a demo file showing an example of how to use mad-lab-lib.tcl
+#  Mad-Lab-lib is open source and published under the GNU General Public License
+
+#  license
+#  Copyright (c) 2013 Benjamin Brink
+#  po box 20, Marylhurst, OR 97036-0020 usa
+#  email: tekbasse@yahoo.com
+
+#  A local copy is available at LICENSE.txt
+
 
 proc import_climate_datafile { filename } {
     # returns data as a list of lists

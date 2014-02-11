@@ -1,4 +1,14 @@
 # file: data-analyzer.tcl
+#  This is a demo file showing an example of how to use mad-lab-lib.tcl
+#  Mad-Lab-lib is open source and published under the GNU General Public License
+
+#  license
+#  Copyright (c) 2013 Benjamin Brink
+#  po box 20, Marylhurst, OR 97036-0020 usa
+#  email: tekbasse@yahoo.com
+
+#  A local copy is available at LICENSE.txt
+
 
 source mad-lab-lib.tcl
 
@@ -268,7 +278,6 @@ foreach cfc $ct_list {
 
 
         # Split data into climate temperature trends (down or up) curves
-        # dcounter = slope or trend change counter
         # get first row to set initial variables
         set row_list [lindex $gt_data_lists 0]
         # row_list \[list year_decimal gt gt_err year month eqe eqe_err eqe_min eqe_max \]
@@ -283,19 +292,18 @@ foreach cfc $ct_list {
         set eqe_min [lindex $row_list 7]
         set eqe_max [lindex $row_list 8]
 
-        set dcounter 1
-        set gt_dy_arr($dcounter) 0.
-        set eqe_yyyy_mm_dy_arr($dcounter) 0.
-        set ct_months_dy_arr($dcounter) 0
-
         set gt_tot 0.
-        set eqe_tot 0.
-        set gt_interval_count 0
-        set eqe_min_tot 0.
-        set eqe_max_tot 0.
+        set gt_tot_err 0.
+        set eqe_tot $eqe
+        set gt_interval_count 1
+        set eqe_min_tot $eqe_min
+        set eqe_max_tot $eqe_max
 
         set gt_prev $gt
-        set delta_t_prev 0
+        # delta_t_prev needs to start with the same sign as gt
+        # to not throw a false audit error in the loop.
+        # Only the sign of delta_t_prev is relevant.
+        set delta_t_prev [expr { $gt / 10. } ]
         set eqe_tot_prev $eqe_tot
         set gt_tot_prev $gt_tot
         set eqe_max_tot_prev $eqe_max_tot
@@ -314,28 +322,43 @@ foreach cfc $ct_list {
 
             set delta_t [expr { $gt - $gt_prev } ]
             set delta_factor [expr {  $delta_t * $delta_t_prev } ]
+
             if { $delta_factor < 0. } {
                 # prior trend is now defined, values are fixed
-                set eqedt [expr { $eqe_tot_prev - $eqe_tot } ]
-
+                set eqedt [expr { $eqe_tot - $eqe_tot_prev } ]
+               
                 # min trend, chooses eqe values that minimize trend
-                # Since all eqe values are greater than 0, 
-                # eqe_min_tot_prev - eqe_max_tot will always give the largest change
-                set eqedt_min [expr { $eqe_min_tot_prev - $eqe_max_tot } ]
-                # eqe_max_tot_prev - eqe_min_tot will always give the smallest change                
-                set eqedt_max [expr { $eqe_max_tot_prev - $eqe_min_tot } ]
+                # Make an arbitrary guess at min and max, then swap values if opposite is true
+                # smallest change
+                set eqedt_min [expr { $eqe_min_tot - $eqe_max_tot_prev } ]
+                # largest change
+                set eqedt_max [expr { $eqe_max_tot - $eqe_min_tot_prev } ]
+                if { $eqedt_max < $eqedt_min } {
+                    set scratch $eqedt_max
+                    set eqedt_max $eqedt_min
+                    set eqedt_min $scratch
+                }
 
                 # create a trend row
                 # add it to trend_lists
                 #set trend_titles_list \[list gt_interval_count gtdt gtdt_err eqe_tot eqe_min_tot eqe_max_tot eqedt eqedt_min eqedt_max\]
-                set trend_row_list [list $gt_interval_count $gt_tot $gt_err $eqe_tot $eqe_min_tot $eqe_max_tot $eqedt $eqedt_min $eqedt_max]
+                set trend_row_list [list $gt_interval_count $gt_tot $gt_tot_err $eqe_tot $eqe_min_tot $eqe_max_tot $eqedt $eqedt_min $eqedt_max]
                 lappend trend_lists $trend_row_list 
-                set eqe_tot_prev $eqe_tot
+
+                if { [expr { $gt_tot_prev * $gt_tot } ] > 0 } {
+                    set errormsg "Error (ref335): Current and previous gt_tot trend have same sign."
+                    puts "gt_tot $gt_tot gt_tot_prev $gt_tot_prev"
+                    puts "gt $gt delta_t $delta_t delta_factor $delta_factor"
+                    error $errormsg
+                }
+                # record current trend as previous trend
                 set gt_tot_prev $gt_tot
+                set eqe_tot_prev $eqe_tot
                 set eqe_max_tot_prev $eqe_max_tot
                 set eqe_min_tot_prev $eqe_min_tot
                 # create start point of new trend
                 set gt_tot 0.
+                set gt_tot_err 0.
                 set eqe_tot 0.
                 set eqe_min_tot 0.
                 set eqe_max_tot 0.
@@ -343,7 +366,8 @@ foreach cfc $ct_list {
             }
             # Assume this point is the last in the trend (until next point is examined).
             # set (accumulated) trend values. 
-            set gt_tot [expr { $gt_tot + $gt } ]
+            set gt_tot [expr { $gt_tot + $delta_t } ]
+            set gt_tot_err [expr { $gt_tot_err + $gt_err } ]
             set eqe_tot [expr { $eqe_tot + $eqe } ]
             set eqe_min_tot [expr { $eqe_min_tot + $eqe_min } ]
             set eqe_max_tot [expr { $eqe_max_tot + $eqe_max } ]

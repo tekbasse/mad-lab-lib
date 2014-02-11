@@ -17,7 +17,7 @@ email: tekbasse@yahoo.com
 
 Mad-Lab-lib is open source and published under the GNU General Public License
 
-A local copy is available at LICENSE.html
+A local copy is available at LICENSE.txt
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
