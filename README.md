@@ -60,3 +60,20 @@ DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF."
    (from: http://www.graphicsmagick.org/ )
 
 
+demonstration
+-------------
+
+To run a demonstration:
+
+0. Install Tcl ( http://tcl.tk )  and GraphicsMagick ( http://www.graphicsmagick.org ).
+
+1. Download earthquake data greater than magnitude 6.4 from: http://www.iris.edu/ieb/ or other source.
+   convert-eq.tcl expects to filter an html page saved from this source.
+
+2. Download climate data from http://www-users.york.ac.uk/~kdc3/papers/coverage2013/methods.html or other source.
+   convert-gt.tcl expects to filter a data set from this source.
+
+3. Make changes to code to read data from files. No modifications should be necessary if using referenced sources as of 2014-02-11.
+
+4. From a command shell, start the Tcl interpreter.  Type 'source data-analyzer.tcl'. Locally, charts generate about one every 3 or 4 minutes.
+
