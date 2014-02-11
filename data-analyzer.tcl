@@ -253,9 +253,9 @@ foreach cfc $ct_list {
             set eqe_tot [expr { $eqe_tot + $eqe } ]
             
         }
-        puts "Min energy (ExaJoules): $eqe_min"
-        puts "Max energy (ExaJoules): $eqe_max"
-        puts "Total energy (ExaJoules): $eqe_tot"
+        puts "Min energy (Joules): [pretty_metric $eqe_min]"
+        puts "Max energy (Joules): [pretty_metric $eqe_max]"
+        puts "Total energy (Joules): [pretty_metric $eqe_tot]"
         set y_eq_range [expr { $eqe_max - $eqe_min } ]
         puts "Energy range: $y_eq_range"
         set y_eq_diff_range [expr { $eqe_diff_max - $eqe_diff_min } ]
@@ -371,7 +371,7 @@ foreach cfc $ct_list {
 
         list_of_lists_to_file gt-eq-trends.txt $trend_lists
         # g2_data_lists: year_decimal gt gt_err year month eqe eqe_err eqe_min eqe_max
-        graph_lol lin-lin gt-eq_plot-$cfc-$efc.png "" gt2_data_lists [list 0 1] [list 4 6 7] "origin" "" 12 12 "Global T (C)" "Earthquake e (J)" 
+        graph_lol lin-lin gt-eq-plot-$cfc-$efc.png "" gt2_data_lists [list 1 2] [list 5 7 8] "origin" "" 12 12 "Global T (C)" "Earthquake e (J)" 
 # graph_lol {type "lin-lin"} filename region data_list_of_lists x_index y_index x_style y_style x_ticks_count y_ticks_count x_title y_title
         graph_lol lin-lin dgt-eq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 3 4 5] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e (J)"
         graph_lol lin-lin dgt-deq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 6 7 8] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e change (J)"

@@ -506,7 +506,7 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
                 set x_max [expr { round( $x1 + $x_delta * ( $x_max - $fx_min ) / $fx_range ) } ]
                 draw_image_path_color $filename [list $x_min $y $x_max $y] "#99ccff"
             } else {
-                puts "not: x_min $x_min < x $x < x_max $x_max"
+                puts "Warning: x_min $x_min < x $x < x_max $x_max"
             }
         }
         if { $y_index_type > 1 } {
