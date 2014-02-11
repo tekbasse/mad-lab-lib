@@ -7,7 +7,8 @@ The lastest version of the code is available at the development site:
 Mad Laboratory Tcl and graphics library
 ---------------------------------------
 
-For experimenter's with limited computing hardware resources
+For experimenter's working with limited or vintage computing hardware resources
+
 
 license
 -------
