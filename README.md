@@ -59,6 +59,18 @@ over 88 major formats including important formats like
 DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF."
    (from: http://www.graphicsmagick.org/ )
 
+files
+-----
+
+mad-lab-lib.tcl    Tcl procedures
+data-analyzer.tcl  A Tcl demo program that combines and summarizes data from files.
+eq-data-*.txt  Filtered earthquake data used for plots, in tab-delimited format
+gt-data-*.txt  Filtered global temperature data used for plots, in tab-delimited format
+gt-eq-combo.txt Earthquake energy combined and appended to the global temperature data
+gt-eq-trends.txt Global temperature trends with summary earthquake energy per trend.
+
+A trend is defined as a contiguous change of temperature in the same direction.
+
 
 demonstration
 -------------
