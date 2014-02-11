@@ -10,7 +10,7 @@
 #  A local copy is available at LICENSE.txt
 
 
-proc import_climate_datafile { filename } {
+proc mll_import_climate_datafile { filename } {
     # returns data as a list of lists
     # in form:  $year_decimal $gt $error_amount $year $month
     set data_txt ""

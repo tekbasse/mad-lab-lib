@@ -31,7 +31,7 @@ if { $tcl_version < 8.5 } {
     puts "Tcl version 8.5 or above recommended for math processing."
 }
 
-proc gm_path_builder { list_of_points } {
+proc mll_gm_path_builder { list_of_points } {
     # Convert a list of x_y coordinates to gm -draw path's paramter format.
     set point_count [expr { [llength $list_of_points] / 2 } ]
     set x [lindex $list_of_points 0]
@@ -56,7 +56,7 @@ proc gm_path_builder { list_of_points } {
     return $path_specification
 }
 
-proc image_width_height { filename } {
+proc mll_image_width_height { filename } {
     # returns the width and height in pixels of filename as a list: width, height.
     # original from OpenACS photo-album pa_image_width_height
     set identify_string [exec gm identify $filename]
@@ -65,7 +65,7 @@ proc image_width_height { filename } {
 }
 
 
-proc draw_image_path_color { imagename x_y_coordinates_list color {opacity 1} } {
+proc mll_draw_image_path_color { imagename x_y_coordinates_list color {opacity 1} } {
     # Draw a path of line segments.
     # Move to first x_y_coordinate in path represented as a list
     # then draw to each coordinate thereafter.
@@ -78,14 +78,14 @@ proc draw_image_path_color { imagename x_y_coordinates_list color {opacity 1} } 
         set path_segment [lrange $x_y_coordinates_list 0 99]
         set x_y_coordinates_list [lrange $x_y_coordinates_list 98 end]
         #puts "exec gm convert -fill none -stroke $color -draw [gm_path_builder $path_segment ] $imagename $imagename"
-        exec gm convert -fill $fillcolor -stroke $color -draw [gm_path_builder $path_segment ] $imagename $imagename
+        exec gm convert -fill $fillcolor -stroke $color -draw [mll_gm_path_builder $path_segment ] $imagename $imagename
     }
     # This works in bash shell:
     # gm convert gt-eq-plot-0-0.png -fill "#0000ff" -stroke "#0000ff" -draw 'path "M 50 55 L 60 65 L 70 75" circle 80,85 90,95 point 100,105' gt-eq-plot-0-0.png
 
 
-    #puts "exec gm convert -fill none -stroke $color -draw [gm_path_builder $x_y_coordinates_list ] $imagename $imagename"
-    set path [gm_path_builder $x_y_coordinates_list ]
+    #puts "exec gm convert -fill none -stroke $color -draw [mll_gm_path_builder $x_y_coordinates_list ] $imagename $imagename"
+    set path [mll_gm_path_builder $x_y_coordinates_list ]
     if { [string match "*point*" $path] } {
         #set fillcolor $color
         #puts "exec gm convert $imagename -fill $color -draw $path $imagename"
@@ -95,7 +95,7 @@ proc draw_image_path_color { imagename x_y_coordinates_list color {opacity 1} } 
     }
 }
 
-proc draw_image_rect_color { imagename x0 y0 x1 y1 fillcolor {bordercolor ""} {opacity 1} } {
+proc mll_draw_image_rect_color { imagename x0 y0 x1 y1 fillcolor {bordercolor ""} {opacity 1} } {
     # Draw a rectangle
     if { $bordercolor eq ""} {
         set bordercolor $fillcolor
@@ -120,7 +120,7 @@ proc draw_image_rect_color { imagename x0 y0 x1 y1 fillcolor {bordercolor ""} {o
     exec gm convert -fill $fillcolor -stroke $bordercolor -draw "rectangle $x0,$y0 $x1,$y1" $imagename $imagename
 }
 
-proc annotate_image_pos_color { imagename x y color text } {
+proc mll_annotate_image_pos_color { imagename x y color text } {
     # Annotate an image
     # To annotate with blue text using font 12x24 at position (100,100), use:
     #    gm convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" bird.jpg bird.miff
@@ -130,7 +130,7 @@ proc annotate_image_pos_color { imagename x y color text } {
     exec gm convert -fill $color -draw "text $x,$y '$text'" $imagename $imagename
 }
 
-proc scale { x } {
+proc mll_scale { x } {
     # energy of 6.4 mag eq = k, where energy = \[expr { pow( 10. , 1.5 * $mag + 16.1) * $eq_unit_conv_factor } \]
     # k = 5.011872336272756 @ mag = 6.4
     # k = 3.548133892335761 @ mag = 6.3
@@ -146,7 +146,7 @@ proc scale { x } {
     return $x2
 }
 
-proc list_of_lists_to_file { filename list_of_lists } {
+proc mll_list_of_lists_to_file { filename list_of_lists } {
     set fileId [open $filename w]
     foreach row $list_of_lists {
         puts $fileId [join $row \t]
@@ -154,7 +154,7 @@ proc list_of_lists_to_file { filename list_of_lists } {
     close $fileId
 }
 
-proc pretty_metric { number {unit ""} {significand "1"} {ignore_units ""} } {
+proc mll_pretty_metric { number {unit ""} {significand "1"} {ignore_units ""} } {
     set number_abs [expr { abs( $number ) } ]
 
     # ref: http://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes
@@ -210,7 +210,7 @@ proc pretty_metric { number {unit ""} {significand "1"} {ignore_units ""} } {
     return $pretty_metric
 }
 
-proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_index x_style y_style x_ticks_count y_ticks_count x_title y_title } {
+proc mll_graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_index x_style y_style x_ticks_count y_ticks_count x_title y_title } {
     upvar $data_list_of_lists data_lists
     # if x_index or y_index is a list: 
     # 1 element in list: index
@@ -349,12 +349,12 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
         if { $fx2_min < $fx_min } {
             set fx_min $fx2_min
         } else {
-            puts "graph_lol(324): Why isn't fx2_min $fx2_min less than fx_min $fx_min ?"
+            puts "mll_graph_lol(324): Why isn't fx2_min $fx2_min less than fx_min $fx_min ?"
         }
         if { $fx2_max > $fx_max } {
             set fx_max $fx2_max
         } else {
-            puts "graph_lol(327): Why isn't fx2_max $fx2_max greater than fx_max $fx_max ?"
+            puts "mll_graph_lol(327): Why isn't fx2_max $fx2_max greater than fx_max $fx_max ?"
         }
     }
 
@@ -370,12 +370,12 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
         if { $fy2_min < $fy_min } {
             set fy_min $fy2_min
         } else {
-            puts "graph_lol(343): Why isn't fy2_min $fy2_min less than fy_min $fy_min ?"
+            puts "mll_graph_lol(343): Why isn't fy2_min $fy2_min less than fy_min $fy_min ?"
         }
         if { $fy2_max > $fy_max } {
             set fy_max $fy2_max
         } else {
-            puts "graph_lol(348): Why isn't fy2_max $fy2_max greater than fy_max $fy_max ?"
+            puts "mll_graph_lol(348): Why isn't fy2_max $fy2_max greater than fy_max $fy_max ?"
         }
     }
 
@@ -452,25 +452,25 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
     # Add an x or y origin line?
     if {  [string match "*origin*" $x_style] } {
         set x_0 [expr { round( $x1 + $x_delta * ( 0 - $fx_min ) / $fx_range ) } ]
-        draw_image_path_color $filename [list $x_0 $y1 $x_0 $y2] "#eeeeee"
+        mll_draw_image_path_color $filename [list $x_0 $y1 $x_0 $y2] "#eeeeee"
     }
     if { [string match "*origin*" $y_style] } {
         set y_0 [expr { round( $y2 - $y_delta * ( 0 - $fy_min ) / $fy_range ) } ]
-        draw_image_path_color $filename [list $x1 $y_0 $x2 $y_0] "#eeeeee"
+        mll_draw_image_path_color $filename [list $x1 $y_0 $x2 $y_0] "#eeeeee"
     }
 
 
     # x axis
-    draw_image_path_color $filename [list $x1 $y2 $x2 $y2] "#ccccff"
+    mll_draw_image_path_color $filename [list $x1 $y2 $x2 $y2] "#ccccff"
     # x axis ticks
     set y_tick [expr { $y2 + 4 } ]
     set k1 [expr { $x_delta / ( $x_ticks_count * 1. ) } ]
     for {set i 0} {$i <= $x_ticks_count } {incr i} {
         set x_plot [expr { round( $x1 + $k1 * ( $i * 1. ) ) } ]
-        draw_image_path_color $filename [list $x_plot $y2 $x_plot $y_tick] "#ccccff"
+        mll_draw_image_path_color $filename [list $x_plot $y2 $x_plot $y_tick] "#ccccff"
     }
     if { ![info exists width_px ] } {
-        set width_px [lindex [image_width_height $filename] 0]
+        set width_px [lindex [mll_image_width_height $filename] 0]
     }
     # Rotate image, plot values for x-axis ticks
     exec gm convert -rotate 270 $filename $filename
@@ -481,13 +481,13 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
     for {set i 0} {$i <= $x_ticks_count } {incr i} {
         set x_plot [expr { round( $x2_margin + ( $i * 1. ) * $k1 ) } ]
         set x [expr { $fx_max - $k2 * ( $i * 1. ) } ]
-        annotate_image_pos_color $filename $y_tick $x_plot "#aaaaff" [pretty_metric $x "" 2 "c d da h"]
+        mll_annotate_image_pos_color $filename $y_tick $x_plot "#aaaaff" [mll_pretty_metric $x "" 2 "c d da h"]
     }
     # rotate back.
     exec gm convert -rotate 90 $filename $filename
 
     # y axis, left side
-    draw_image_path_color $filename [list $x1 $y1 $x1 $y2] "#ffaaaa"
+    mll_draw_image_path_color $filename [list $x1 $y1 $x1 $y2] "#ffaaaa"
     # y axis ticks
     set x_tick [expr { $x1 - 40 } ]
     if { $x_tick < 0 } {
@@ -497,11 +497,11 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
     set k2 [expr { $fy_range / ( $y_ticks_count * 1. ) } ]
     for {set i 0} {$i <= $y_ticks_count } {incr i} {
         set y_plot [expr { round( $y2 - $k1 * $i ) } ] 
-        draw_image_path_color $filename [list $x1 $y_plot $x_tick $y_plot] "#ffaaaa"
+        mll_draw_image_path_color $filename [list $x1 $y_plot $x_tick $y_plot] "#ffaaaa"
         # add label
         set y_tick [expr { $y_plot - 6 } ]
         set y [expr { $k2 * ( $i * 1. ) + $fy_min } ]
-        annotate_image_pos_color $filename $x_tick $y_tick "#ffaaaa" "[pretty_metric $y "" 2 "c d da h"]"
+        mll_annotate_image_pos_color $filename $x_tick $y_tick "#ffaaaa" "[mll_pretty_metric $y "" 2 "c d da h"]"
     }
 
 
@@ -520,7 +520,7 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
                 # plot x min to max @ y
                 set x_min [expr { round( $x1 + $x_delta * ( $x_min - $fx_min ) / $fx_range ) } ]
                 set x_max [expr { round( $x1 + $x_delta * ( $x_max - $fx_min ) / $fx_range ) } ]
-                draw_image_path_color $filename [list $x_min $y $x_max $y] "#99ccff"
+                mll_draw_image_path_color $filename [list $x_min $y $x_max $y] "#99ccff"
             } else {
                 puts "Warning: x_min $x_min < x $x < x_max $x_max"
             }
@@ -534,7 +534,7 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
             set y_min [expr { round( $y2 - $y_delta * ( $y_min - $fy_min ) / $fy_range ) } ] 
             set y_max [expr { round( $y2 - $y_delta * ( $y_max - $fy_min ) / $fy_range ) } ] 
             # plot y min to max @ x
-            draw_image_path_color $filename [list $x $y_min $x $y_max] "#ffcc99"
+            mll_draw_image_path_color $filename [list $x $y_min $x $y_max] "#ffcc99"
         }
         incr i
     }
@@ -544,8 +544,8 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
     if { $y_plot < 0 } {
         set y_plot 1
     }
-    annotate_image_pos_color $filename [expr { round( ( $x1 + $x2 - [string length $y_title] * 12 ) / 2. ) } ] [expr { $y_plot } ] "#ff0000" $y_title
-    annotate_image_pos_color $filename [expr { round( ( $x1 + $x2 - [string length $x_title] * 12 ) / 2. ) } ] [expr { $y_plot + 20 } ] "#0000ff" $x_title
+    mll_annotate_image_pos_color $filename [expr { round( ( $x1 + $x2 - [string length $y_title] * 12 ) / 2. ) } ] [expr { $y_plot } ] "#ff0000" $y_title
+    mll_annotate_image_pos_color $filename [expr { round( ( $x1 + $x2 - [string length $x_title] * 12 ) / 2. ) } ] [expr { $y_plot + 20 } ] "#0000ff" $x_title
 
     # foreground
     foreach p_x_y $pxy_lists {
@@ -554,7 +554,7 @@ proc graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index y_i
         set x [expr { round( $x1 + $x_delta * ( $xval - $fx_min ) / $fx_range ) } ]
         set y [expr { round( $y2 - $y_delta * ( $yval - $fy_min ) / $fy_range ) } ] 
         # plot x, y
-        draw_image_path_color $filename [list $x $y] "#ff00ff"
+        mll_draw_image_path_color $filename [list $x $y] "#ff00ff"
     }
 
     set time_end [clock seconds]

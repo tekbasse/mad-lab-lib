@@ -9,7 +9,7 @@
 
 #  A local copy is available at LICENSE.txt
 
-proc import_earthquake_datafile { filename } {
+proc mll_import_earthquake_datafile { filename } {
     # input earthquake datafile, returns content as list of lists
     set data_html ""
     set fileId [open $filename r]

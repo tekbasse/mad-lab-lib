@@ -30,14 +30,14 @@ set t_fi_list [list \
 set cfcount 0
 foreach filename $t_fi_list {
     puts "cfcount $cfcount"
-    set globalT_fi($cfcount) [lrange [import_climate_datafile $filename] 1 end]
+    set globalT_fi($cfcount) [lrange [mll_import_climate_datafile $filename] 1 end]
     # list in form:  year_decimal gt gt_err year month
     # ignore first row, it consists of titles
     #  Data in this format:
     #  year_decimal = YYYY + (MM-1)/12 + 1/24, where YYYY-MM is year and month
     #  gt      = offset of temperature in Celsius from a consistent reference temperature.
     #  error_amt     = measurement error.
-    list_of_lists_to_file gt-data-${cfcount}.txt $globalT_fi($cfcount)
+    mll_list_of_lists_to_file gt-data-${cfcount}.txt $globalT_fi($cfcount)
     incr cfcount
 }
 
@@ -50,10 +50,10 @@ set eq_fi_list [list "IEB-export-earthquakes-as-an-HTML-table.html"]
 set efcount 0
 foreach filename $eq_fi_list {
     puts "efcount $efcount"
-    set eq_fi($efcount) [lrange [import_earthquake_datafile $filename] 1 end]
+    set eq_fi($efcount) [lrange [mll_import_earthquake_datafile $filename] 1 end]
     # ignore first row, it consists of titles
     # list: mag depth day time_utc lat lon region event_id timestamp_epoch energy_exajoules year month year_decimal energy_error_min energy_error_max energy_error
-    list_of_lists_to_file eq-data-${efcount}.txt $eq_fi($efcount)
+    mll_list_of_lists_to_file eq-data-${efcount}.txt $eq_fi($efcount)
     incr efcount
 }
 
@@ -167,7 +167,7 @@ foreach cfc $ct_list {
             lappend gt2_data_lists $gteq_row_list
         }
         # save gT data with eq accumulations
-        list_of_lists_to_file gt-eq-combo.txt $gt2_data_lists
+        mll_list_of_lists_to_file gt-eq-combo.txt $gt2_data_lists
 
         # remove title row and replace gt_ with gt2_ data
         # set titles_list [lindex $gt2_row_lists 0]
@@ -263,9 +263,9 @@ foreach cfc $ct_list {
             set eqe_tot [expr { $eqe_tot + $eqe } ]
             
         }
-        puts "Min energy (Joules): [pretty_metric $eqe_min]"
-        puts "Max energy (Joules): [pretty_metric $eqe_max]"
-        puts "Total energy (Joules): [pretty_metric $eqe_tot]"
+        puts "Min energy (Joules): [mll_pretty_metric $eqe_min]"
+        puts "Max energy (Joules): [mll_pretty_metric $eqe_max]"
+        puts "Total energy (Joules): [mll_pretty_metric $eqe_tot]"
         set y_eq_range [expr { $eqe_max - $eqe_min } ]
         puts "Energy range: $y_eq_range"
         set y_eq_diff_range [expr { $eqe_diff_max - $eqe_diff_min } ]
@@ -393,11 +393,11 @@ foreach cfc $ct_list {
         set trend_row_list [list $gt_interval_count $gt_tot $gt_err $eqe_tot $eqe_min_tot $eqe_max_tot $eqedt $eqedt_min $eqedt_max]
         lappend trend_lists $trend_row_list 
 
-        list_of_lists_to_file gt-eq-trends.txt $trend_lists
+        mll_list_of_lists_to_file gt-eq-trends.txt $trend_lists
         # g2_data_lists: year_decimal gt gt_err year month eqe eqe_err eqe_min eqe_max
-        graph_lol lin-lin gt-eq-plot-$cfc-$efc.png "" gt2_data_lists [list 1 2] [list 5 7 8] "origin" "" 12 12 "Global T (C)" "Earthquake e (J)" 
+        mll_graph_lol lin-lin gt-eq-plot-$cfc-$efc.png "" gt2_data_lists [list 1 2] [list 5 7 8] "origin" "" 12 12 "Global T (C)" "Earthquake e (J)" 
 # graph_lol {type "lin-lin"} filename region data_list_of_lists x_index y_index x_style y_style x_ticks_count y_ticks_count x_title y_title
-        graph_lol lin-lin dgt-eq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 3 4 5] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e (J)"
-        graph_lol lin-lin dgt-deq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 6 7 8] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e change (J)"
+        mll_graph_lol lin-lin dgt-eq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 3 4 5] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e (J)"
+        mll_graph_lol lin-lin dgt-deq-plot-$cfc-$efc.png "" trend_lists [list 1 2] [list 6 7 8] "origin" "origin" 12 12 "Global T change (C)" "Earthquake e change (J)"
     }
 }

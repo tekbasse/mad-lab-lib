@@ -73,7 +73,11 @@ To run a demonstration:
 2. Download climate data from http://www-users.york.ac.uk/~kdc3/papers/coverage2013/methods.html or other source.
    convert-gt.tcl expects to filter a data set from this source.
 
-3. Make changes to code to read data from files. No modifications should be necessary if using referenced sources as of 2014-02-11.
+3. Make changes to code to read data from files. 
+   Changing the names of the data files to read in data-analyzer.tcl
+   are the only modifications that should be necessary if using referenced sources as of 2013-12-13.
 
-4. From a command shell, start the Tcl interpreter.  Type 'source data-analyzer.tcl'. Locally, charts generate about one every 3 or 4 minutes.
+4. From a command shell, start the Tcl interpreter.  Type 'source data-analyzer.tcl'. 
+
+Locally, it takes about 3 to 6 minutes to generate a chart.
 
