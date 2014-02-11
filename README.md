@@ -62,19 +62,20 @@ DPX, GIF, JPEG, JPEG-2000, PNG, PDF, PNM, and TIFF."
 file descriptions
 -----------------
 
- mad-lab-lib.tcl    Tcl procedures
- data-analyzer.tcl  A Tcl demo program that combines and summarizes data from files.
- eq-data-*.txt  Filtered earthquake data used for plots, in tab-delimited format
- gt-data-*.txt  Filtered global temperature data used for plots, in tab-delimited format
- gt-eq-combo.txt Earthquake energy combined and appended to the global temperature data
- gt-eq-trends.txt Global temperature trends with summary earthquake energy per trend.
- dgt-deq-plot-*.png Chart showing delta global temperature vs delta earthquake energy during same temperature trend interval
- dgt-eq-plot-*.png Chart showing delta global temperature vs earthquake energy during same temperature trend interval
- gt-eq-plot-*.png Chart showing global temperature vs earthquake energy during same interval
+- mad-lab-lib.tcl    Tcl procedures This the only file needed. The other files are for demonstration.
+- data-analyzer.tcl  A Tcl demo program that combines and summarizes data from files.
+- convert-eq.tcl  A Tcl procedure that inputs, standardizes and converts earthquake data.
+- convert-gt.tcl A Tcl procedure that inputs global temperature data.
+- eq-data-*.txt  Filtered earthquake data used for plots, in tab-delimited format [2]
+- gt-data-*.txt  Filtered global temperature data used for plots, in tab-delimited format [2]
+- gt-eq-combo.txt Earthquake energy combined and appended to the global temperature data
+- gt-eq-trends.txt Global temperature trends with summary earthquake energy per trend[1].
+- dgt-deq-plot-*.png Chart showing delta global temperature vs delta earthquake energy during same temperature trend interval
+- dgt-eq-plot-*.png Chart showing delta global temperature vs earthquake energy during same temperature trend interval
+- gt-eq-plot-*.png Chart showing global temperature vs earthquake energy during same interval
 
-
-A trend is defined as a contiguous change of temperature in the same direction.
-
+1. A trend is defined as a contiguous change of temperature in the same direction.
+2. See convert-gt.tcl and convert-eq.tcl for data source details.
 
 demonstration
 -------------
@@ -82,18 +83,14 @@ demonstration
 To run a demonstration:
 
 0. Install Tcl ( http://tcl.tk )  and GraphicsMagick ( http://www.graphicsmagick.org ).
-
 1. Download earthquake data greater than magnitude 6.4 from: http://www.iris.edu/ieb/ or other source.
    convert-eq.tcl expects to filter an html page saved from this source.
-
 2. Download climate data from http://www-users.york.ac.uk/~kdc3/papers/coverage2013/methods.html or other source.
    convert-gt.tcl expects to filter a data set from this source.
-
 3. Make changes to code to read data from files. 
    Changing the names of the data files to read in data-analyzer.tcl
    are the only modifications that should be necessary if using referenced sources as of 2013-12-13.
-
 4. From a command shell, start the Tcl interpreter.  Type 'source data-analyzer.tcl'. 
 
-Locally, it takes about 3 to 6 minutes to generate a chart.
+* Locally, it takes about 3 to 6 minutes to generate a chart.
 
