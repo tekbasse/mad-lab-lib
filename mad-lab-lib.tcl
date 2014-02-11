@@ -182,7 +182,7 @@ proc mll_pretty_metric { number {unit ""} {significand "1"} {ignore_units ""} } 
         set unit ""
     }
     #    set units_list \[list pico nano micro milli centi deci "" deca hecto kilo mega giga tera \]
-    set test_base_nbr 1e-24
+    set test_base_nbr 1e[lindex $ab_pow_list 0]
     set i 0
     foreach abbrev $abbrev_list {
         if { $number_abs > $test_base_nbr } {
