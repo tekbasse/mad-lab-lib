@@ -92,6 +92,6 @@ To run a demonstration:
    are the only modifications that should be necessary if using referenced sources as of 2013-12-13.
 4. From a command shell, start the Tcl interpreter.  Type 'source data-analyzer.tcl'. 
 
-* Locally, it takes about 3 to 6 minutes to generate a chart on a Xenon 2.4Ghz 32-bit Ubuntu system; and 
+* Locally, it takes about 3 to 6 minutes to generate a chart on a Xenon 3.4Ghz 32-bit Ubuntu system; and 
   9 to 14 minutes for a power_pc g4 laptop debian system.
 
