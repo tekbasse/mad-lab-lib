@@ -4,8 +4,9 @@ Mad Lab lib
 The lastest version of the code is available at the development site:
  http://github.com/tekbasse/mad-lab-lib
 
-Mad Laboratory Tcl and graphics library
+Mad* Laboratory Tcl and graphics library
 ---------------------------------------
+Museum of Ancient Devices
 
 For experimenter's working with limited or vintage computing hardware resources
 
