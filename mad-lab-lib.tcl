@@ -561,3 +561,264 @@ proc mll_graph_lol { {type "lin-lin"} filename region data_list_of_lists x_index
     set time_elapsed [expr { round( ( $time_end - $time_start ) / 6.) / 10. } ]
     puts "Time elapsed: ${time_elapsed} minutes."
 }
+
+proc hex2dec {largeHex} {
+    # This proc from http://wiki.tcl.tk/3242 hexadecimal conversions
+    # Retrieved 2017-10-07
+    set res 0
+    foreach hexDigit [split $largeHex {}] {
+        set new 0x$hexDigit
+        set res [expr {16*$res + $new}]
+    }
+    return $res
+}
+
+proc hex2dec_color { string } {
+    upvar 1 __hex_color_arr hex_arr
+    # Returns hexadecimal as a number.
+    # If hexadecimal is more than two digits,
+    # returns a list of decimal numbers for each two hex digits
+    set string_len [string length $string]
+    set hex ""
+    set dec_list [list ]
+    set dec ""
+    if { [expr { $string_len % 2 } ] eq 0 } {
+        
+        for {set j 0} {$j < $string_len} {incr j 2} {
+            set s [string range $string $j $j+1]
+            if { [info exists hex_arr(${s}) ] } {
+                set dec $hex_arr(${s})
+            } else {
+                scan $s %x dec
+                if { $dec < 0 } {
+                    puts -nonewline "hex2dec_color s $s dec $dec -->"
+                    set dec [hex2dec $s]
+                    puts $dec
+                }
+                if { $dec > 255 } {
+                    puts -nonewline "hex2dec_color s $s dec $dec -->"
+                    set dec [hex2dec $s]
+                    puts $dec
+                }
+                set hex_arr(${s}) $dec
+            }
+            lappend dec_list $dec
+        }
+    }
+    if { [llength $dec_list ] < 2 } {
+        set r [lindex $dec_list 0 ]
+    } else {
+        set r $dec_list
+    }
+    return $r
+}
+
+proc dec2hex_color { number_list } {
+    upvar 1 __dec_color_arr dec_arr
+    # Assumes each number is between 0 and 255 inclusive
+    # If only one number, returns value as element outside of list.
+    set num_list_len [llength $number_list]
+    set hex_list [list ]
+    set h2d_list [list 0 1 2 3 4 5 6 7 8 9 a b c d e f]
+    foreach num $number_list {
+        if { $num < 0 || $num > 255 } {
+            puts "dec2hex_color num $num out of bounds"
+            if { $num < 0 } {
+                set num 0
+            } else {
+                set num 255
+            }
+        }
+        if { [info exists dec_arr(${num}) ] } {
+            set hex $dec_arr(${num})
+        } else {
+            set hex [format %x $num]
+            set hex_len [string length $hex]
+            if { $hex_len  == 1 } {
+                set hex "0${hex}"
+            }
+            if { $hex_len > 2 || $hex_len eq 0 } {
+                # try slower way
+                puts -nonewline "dec2hex_color $num to $hex --> "
+                set r_idx [expr { $num % 16 } ]
+                set l_idx [expr { $num / 16 } ]
+                set hex [lindex $h2d_list $l_idx]
+                append hex [lindex $h2d_list $r_idx]
+                puts $hex
+            }
+            set dec_arr(${num}) ${hex}
+        }
+        lappend hex_list $hex
+    }
+    if { [llength $hex_list ] < 2 } {
+        set h [lindex $hex_list 0]
+    } else {
+        set h $hex_list
+    }
+    return $h
+}
+
+proc qaf_interpolatep1p2_at_x {p1_x p1_y p2_x p2_y p3_x} {
+    # gpl v2. from github.com/xdcpm/accounts-finance.git package
+    set x_diff [expr { $p2_x - $p1_x } ]
+    
+    if { $x_diff == 0 } {
+        set p3_y $p1_y
+    } else {
+        set y_diff [expr { $p2_y - $p1_y } ]
+        set x3_diff [expr { $p3_x - $p1_x } ]
+        set x_pct_diff [expr { $x3_diff / $x_diff } ]
+        set p3_y [expr { $x_pct_diff * $y_diff + $p1_y } ]
+    }
+    return $p3_y
+}
+
+proc mml_rainbow { pct } {
+    # expects a number from 0 to 100
+    # to represent range:
+    # 0 = red
+    # orange
+    # yellow
+    # green
+    # blue
+    # indigo
+    # 100 = violet
+    
+    # Physical range:
+    # wavelength: 390 to 700 nm
+    #   here: 740 to 380 nm
+    # 
+    # frequency: 430-770 THz
+    #   here: 405 to 788
+    # adjusted to: 406 to 786
+    # Use frequency to simplify math
+    #set f [expr { ( 786 - 407 ) * $pct / 100. + 407. } ]
+    set f [expr { 3.79 * $pct + 407. } ]
+  #  puts "pct $pct f $f "
+    # convert hex to decimal:
+    #  hexadecimal value in $hex
+    #  decimal value in dec
+    #  scan $hex %x dec
+
+    # convert decimal to hex:
+    #  set hex [format %x $dec] (for a-f)
+    #  set hex [format %X $dec] (for A-F)
+    
+    # See https://en.wikipedia.org/wiki/Visible_spectrum
+    
+    # Color Wavelength Frequency Photon energy
+    # violet 380–450 nm 668–789 THz 2.75–3.26 eV
+    # blue 450–495 nm 606–668 THz 2.50–2.75 eV
+    # green 495–570 nm 526–606 THz 2.17–2.50 eV
+    # yellow 570–590 nm 508–526 THz 2.10–2.17 eV
+    # orange 590–620 nm 484–508 THz 2.00–2.10 eV
+    # red 620–750 nm 400–484 THz 1.65–2.00 eV
+    # returns a representative color of the rainbow
+    
+    # https://en.wikipedia.org/wiki/Spectral_color which includes:
+    # https://en.wikipedia.org/wiki/Spectral_color#Table_of_spectral_or_near-spectral_colors
+
+    # worksheet
+    set mps 299792458
+    set nmps [expr $mps * 1e+9]
+    # example f:
+    #set f 570
+    #set hz [expr $nmps /$f ]
+    set thz [expr $nmps /( $f * 1e12)]
+    ##set thz [expr $hz / 1e12]
+
+    upvar 1 __rainbow_ol r_ol
+    # Table as a list of lists:
+    # rainbow_ol
+    # rgb w f description(from wikipedia page ref above)
+    if { ![info exists r_ol] } {
+        set r_ul [list \
+                      [list 990011 740 405 "xtreme red"] \
+                      [list cc0011 700 428 "wide gamut RGB red"] \
+                      [list ff0000 633 473 "He-Ne laser"] \
+                      [list ff8000 605 497 "carmine dye"] \
+                      [list ffc000 589 508 "orange interpreted"] \
+                      [list ffd300 583 513 "nearly gold"] \
+                      [list ffe000 577 519 "Munsell 5Yellow"] \
+                      [list ffef00 574 522 "canary yellow"] \
+                      [list ffff00 570 526 "yellow"] \
+                      [list dfff00 567 529 "Chartreuse yellow"] \
+                      [list bfff00 564 532 "lime"] \
+                      [list 7fff00 558 537 "Chartreuse green"] \
+                      [list 66ff00 556 539 "Bright green"] \
+                      [list 3fff00 552 543 "Harlequin"] \
+                      [list 00cc33 525 571 "Wide-gamut RGB green"] \
+                      [list 00ba5c 517 580 "medium spring green (adjusted)"] \
+                      [list 009f6b 506 592 "green NCS"] \
+                      [list 009f77 503 597 "Munsell 5Green"] \
+                      [list 00b5aa 499 601 "Turquoise (adjusted)"] \
+                      [list 00b7eb 493 608 "cyan"] \
+                      [list 007fff 488 614 "Azure sRGB"] \
+                      [list 0055aa 482 622 "Munsell 5Blue"] \
+                      [list 0000ff 452 663 "Blue RGB"] \
+                      [list 3300ff 446 672 "Indigo"] \
+                      [list 440099 380 788 "Violet"] ]
+        set r1_ol [lsort -integer -index 2 $r_ul]
+        set r_ol [list ]
+        foreach f_set $r1_ol {
+            set freq [lindex $f_set 2]
+            set color [lindex $f_set 0]
+            scan [string range $color 0 1] %x r
+            scan [string range $color 2 3] %x g
+            scan [string range $color 4 5] %x b
+            set f_set_list [list $freq $r $g $b]
+            lappend r_ol $f_set_list
+        }
+    }
+    set r_ol_len [llength $r_ol]
+    set i 0
+    while { [lindex [lindex $r_ol $i] 0] <= $f && $i < $r_ol_len} {
+        
+        incr i
+    }
+    set f1_set [lindex $r_ol $i-1]
+    set f1 [lindex $f1_set 0]
+    set r1 [lindex $f1_set 1]
+    set g1 [lindex $f1_set 2]
+    set b1 [lindex $f1_set 3]
+    
+    set f2_set [lindex $r_ol $i]
+    set f2 [lindex $f2_set 0]
+    set r2 [lindex $f2_set 1]
+    set g2 [lindex $f2_set 2]
+    set b2 [lindex $f2_set 3]
+#    if { ( $f < $f1 && $f1 ne "" ) || ( $f > $f2 && $f2 ne "" ) } {
+#        puts "while-error: f $f f1_set '$f1_set' f2_set '$f2_set'"
+#    }
+    set color_hex ""
+    if { $f eq $f1 || [llength $f2_set] ne 4 || $f2 eq $f1 } {
+        set p_hex [dec2hex_color [list $r1 $g1 $b1]]
+    } else {
+        # interpolate
+
+#        set p_rel [expr { ( $f - $f1 ) / ( $f2 - $f1 + 0. ) } ]
+        set r [qaf_interpolatep1p2_at_x $f1 $r1 $f2 $r2 $f]
+        set g [qaf_interpolatep1p2_at_x $f1 $g1 $f2 $g2 $f]
+        set b [qaf_interpolatep1p2_at_x $f1 $b1 $f2 $b2 $f]
+        set r [expr { int( round( $r ) ) } ]
+ #       if { $r < 0 || $r > 255 } {
+ #           puts -nonewline "r $r p_rel $p_rel f1 $f1 r1 $r1 f2 $f2 r2 $r2 f $f: "
+ #           puts [expr { int( round( $p_rel * ($r2 - $r1) / ($f2 - $f1 + 0.) ) ) } ]
+ #       }
+        set g [expr { int( round( $g ) ) } ]
+ #       if { $g < 0 || $g > 255 } {
+ #           puts -nonewline "g $g p_rel $p_rel f1 $f1 g1 $g1 f2 $f2 g2 $g2 f $f: "
+ #           puts [expr { int( round( $p_rel * ($g2 - $g1) / ($f2 - $f1 + 0.) ) ) } ]
+ #       }
+        set b [expr { int( round( $b ) ) } ]
+ #       if { $b < 0 || $b > 255 } {
+ #           puts -nonewline "b $b p_rel $p_rel f1 $f1 b1 $b1 f2 $f2 b2 $b2 f $f: "
+ #           puts [expr { int( round( $p_rel * ($b2 - $b1) / ($f2 - $f1 + 0.) ) ) } ]
+ #       }
+
+        set p_hex [dec2hex_color [list $r $g $b]]
+    }
+    set color_hex [join $p_hex]
+    
+    return $color_hex
+}
