@@ -822,3 +822,33 @@ proc mml_rainbow { pct } {
     
     return $color_hex
 }
+
+proc mml_new_filename { filename x y} {
+    #    exec gm convert -fill "#ffffff" -draw "rectangle 0,0 $x,$y" test.gif $filename
+    # exec gm convert -size ${x}x${y} "xc:#ffffff" -fill "#ff0000" -draw "rectangle 0,0 10,10" test1.png
+    exec gm convert -size ${x}x${y} "xc:#ffffff" $filename
+    
+}
+
+proc mml_path_spec { list_of_points } {
+    # each point consists of x and y.
+    # move to first point, then draw to each that follows
+    set path_specification ""
+    set movement_type "M"
+    foreach {x y} $list_of_points {
+        append path_specification "${movement_type} $x $y"
+        set movement_type " L"
+    }
+    return $path_specification
+}
+
+proc mml_draw_path { color list_of_points filename } {
+    while { [llength $list_of_points] > 100  } {
+        set path_segment [lrange $list_of_points 0 99]
+        set list_of_points [lrange $list_of_points 98 end]
+        exec gm convert -fill none -stroke $color -draw "path '[mml_path_spec $path_segment ]'" $filename $filename
+#        puts "path_segment $path_segment"
+    }
+    exec gm convert -fill none -stroke $color -draw "path '[mml_path_spec $list_of_points ]'" $filename $filename
+#    puts "list_of_points $list_of_points"
+}
