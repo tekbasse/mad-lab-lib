@@ -3,11 +3,12 @@
 #  Mad Laboratory Tcl and graphics library
 #  For experimenter's with limited computing hardware resources
 
-#  license
+#  License
 #  Copyright (c) 2013 Benjamin Brink
-#  po box 20, Marylhurst, OR 97036-0020 usa
+#  Marylhurst, Oregon, usa
 #  email: tekbasse@yahoo.com
 
+#  Some parts licensed under separate, compatible licenses.
 #  Mad-Lab-lib is open source and published under the GNU General Public License
 
 #  A local copy is available at LICENSE.txt
@@ -723,9 +724,9 @@ proc mml_rainbow { pct } {
     set nmps [expr $mps * 1e+9]
     # example f:
     #set f 570
-    #set hz [expr $nmps /$f ]
+    #set hz expr $nmps /$f 
     set thz [expr $nmps /( $f * 1e12)]
-    ##set thz [expr $hz / 1e12]
+    #set thz expr $hz / 1e12
 
     upvar 1 __rainbow_ol r_ol
     # Table as a list of lists:
@@ -824,8 +825,6 @@ proc mml_rainbow { pct } {
 }
 
 proc mml_new_filename { filename x y} {
-    #    exec gm convert -fill "#ffffff" -draw "rectangle 0,0 $x,$y" test.gif $filename
-    # exec gm convert -size ${x}x${y} "xc:#ffffff" -fill "#ff0000" -draw "rectangle 0,0 10,10" test1.png
     exec gm convert -size ${x}x${y} "xc:#ffffff" $filename
     
 }
@@ -847,8 +846,30 @@ proc mml_draw_path { color list_of_points filename } {
         set path_segment [lrange $list_of_points 0 99]
         set list_of_points [lrange $list_of_points 98 end]
         exec gm convert -fill none -stroke $color -draw "path '[mml_path_spec $path_segment ]'" $filename $filename
-#        puts "path_segment $path_segment"
+        #        puts "path_segment $path_segment"
     }
     exec gm convert -fill none -stroke $color -draw "path '[mml_path_spec $list_of_points ]'" $filename $filename
-#    puts "list_of_points $list_of_points"
+    #    puts "list_of_points $list_of_points"
 }
+
+
+# 'draw' from: http://www.graphicsmagick.org/convert.html
+# draw choices: from: http://www.graphicsmagick.org/GraphicsMagick.html#details-draw
+# point           x,y
+# line            x0,y0 x1,y1
+# rectangle       x0,y0 x1,y1
+# roundRectangle  x0,y0 x1,y1 wc,hc
+# arc             x0,y0 x1,y1 a0,a1
+# ellipse         x0,y0 rx,ry a0,a1
+# circle          x0,y0 x1,y1
+# polyline        x0,y0  ...  xn,yn
+# polygon         x0,y0  ...  xn,yn
+# Bezier          x0,y0  ...  xn,yn
+# path            path specification (*See mml_path_spec ) 
+# image           operator x0,y0 w,h filename
+# For example:
+#set path [mml_path_spec [list $x $y_min $x $y_max]]
+#exec gm convert -stroke $color -strokewidth 1 -draw "path '${path}'" $new_file $new_file
+
+#    exec gm convert -fill "#ffffff" -draw "rectangle 0,0 $x,$y" test.gif $filename
+# exec gm convert -size ${x}x${y} "xc:#ffffff" -fill "#ff0000" -draw "rectangle 0,0 10,10" test1.png
