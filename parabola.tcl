@@ -36,7 +36,7 @@ set y_midpoint [expr { $y_max / 2. } ]
 set o_x [expr { ( $x_max - $x_min ) / 2 } ]
 set o_y [expr { ( $y_max - $y_min ) / 2 } ]
 
-set new_file gbar-${x_max}x${y_max}.png
+set new_file parabola-${x_max}x${y_max}.png
 mml_new_filename $new_file $x_max $y_max
 
 # Focal point is at depth of antenna
@@ -44,6 +44,8 @@ mml_new_filename $new_file $x_max $y_max
 # Multiply it by a number < 1 to put focal point inside antenna
 set focal_point [expr { $y_max } ]
 set k [expr { 4. * $focal_point } ]
+puts "If diffusion is Gaussian distribution with 80% at 18deg,"
+puts "then 80% of reflection is approximately within"
 
 
 
@@ -56,6 +58,12 @@ set white "#ffffff"
 set skyblue "#66ccff"
 set red "#ff0000"
 set black "#000000"
+
+
+set radius [expr { round( $y_max_inches * sin( 18. * $pi / 180.) * 10 ) / 20. }]
+puts "$radius inches of focal point."
+
+
 
 # alpha is angle between x-axis and page normal to view.
 set alpha $quartpi
